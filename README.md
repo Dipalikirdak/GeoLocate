@@ -107,13 +107,8 @@ Try these for quick testing:
 Found a bug? Have suggestions?  
 Submit feedback using the **feedback form** in the app or connect with me here:  
 
-[![LinkedIn](https://img.shields.io/badge/💼-LinkedIn-blue?logo=linkedin)](https://www.linkedin.com/in/dipali-kirdak-4722b2303)
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?logo=linkedin)](https://www.linkedin.com/in/dipali-kirdak-4722b2303)
 
-[![GitHub](https://img.shields.io/badge/🐙-GitHub-black?logo=github)](https://github.com/Dipalikirdak)
+[![GitHub](https://img.shields.io/badge/-GitHub-black?logo=github)](https://github.com/Dipalikirdak)
 
----
-
-📜 License
-
-This project is open-source and available under the MIT License.
 
