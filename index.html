@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoLocate | IP Address & Location Finder</title>
+    <!-- External Resources -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwindcssConfig.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="header-gradient text-white">
+        <div class="max-w-7xl mx-auto px-4 py-7 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="bg-white p-2 rounded-xl mr-4">
+                    <i class="fas fa-map-marker-alt text-primary text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold">GeoLocate</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-14">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-5 text-gray-800">Discover IP Address Information</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
+                Accurate geolocation data for any IP address. Find location, timezone, ISP and more.
+            </p>
+
+            <!-- Search Section -->
+            <div class="max-w-2xl mx-auto mb-16">
+                <div class="search-container bg-white rounded-2xl p-2 flex flex-col sm:flex-row">
+                    <input 
+                        type="text" 
+                        id="ipInput"
+                        placeholder="Enter IP Address (e.g., 8.8.8.8)" 
+                        class="flex-grow py-5 px-6 rounded-xl focus:outline-none focus:ring-3 focus:ring-primary text-gray-700 text-lg"
+                    >
+                    <button 
+                        id="searchBtn"
+                        class="bg-primary hover:bg-primary-dark text-white py-5 px-10 rounded-xl font-semibold transition-all mt-3 sm:mt-0 sm:ml-3 flex items-center justify-center text-lg"
+                    >
+                        <i class="fas fa-search mr-3"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 pb-16">
+
+        <!-- Information Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-14">
+            
+            <!-- IP Address Card -->
+            <div class="card p-7">
+                <div class="flex items-start">
+                    <div class="info-icon mr-5">
+                        <i class="fas fa-network-wired text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-gray-500 text-sm font-semibold mb-2">IP ADDRESS</h3>
+                        <p id="ipAddress" class="text-xl font-bold text-gray-800 skeleton h-7 info-text"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Location Card -->
+            <div class="card p-7">
+                <div class="flex items-start">
+                    <div class="info-icon mr-5">
+                        <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-gray-500 text-sm font-semibold mb-2">LOCATION</h3>
+                        <p id="location" class="text-xl font-bold text-gray-800 skeleton h-7 info-text"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timezone Card -->
+            <div class="card p-7">
+                <div class="flex items-start">
+                    <div class="info-icon mr-5">
+                        <i class="fas fa-clock text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-gray-500 text-sm font-semibold mb-2">TIMEZONE</h3>
+                        <p id="timezone" class="text-xl font-bold text-gray-800 skeleton h-7 info-text"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ISP Card -->
+            <div class="card p-7">
+                <div class="flex items-start">
+                    <div class="info-icon mr-5">
+                        <i class="fas fa-wifi text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-gray-500 text-sm font-semibold mb-2">ISP</h3>
+                        <p id="isp" class="text-xl font-bold text-gray-800 skeleton h-7 info-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="card overflow-hidden mb-14">
+            <div class="p-6 border-b flex flex-col md:flex-row justify-between items-start md:items-center bg-blue-50">
+                <h2 class="text-xl font-semibold text-gray-800 flex items-center mb-3 md:mb-0">
+                    <i class="fas fa-map mr-3 text-primary"></i> Location Map
+                </h2>
+                <div class="flex items-center">
+                    <i class="fas fa-globe-americas mr-2 text-gray-500"></i>
+                    <span id="mapLocation" class="text-gray-600">Detecting your location...</span>
+                </div>
+            </div>
+            <div id="map" class="z-0"></div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div class="card p-7 text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i class="fas fa-bolt text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Instant Results</h3>
+                <p class="text-gray-600">Get IP location data in milliseconds with our optimized infrastructure.</p>
+            </div>
+            
+            <div class="card p-7 text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i class="fas fa-shield-alt text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Privacy Focused</h3>
+                <p class="text-gray-600">We don't store your search data. All requests are encrypted for privacy.</p>
+            </div>
+            
+            <div class="card p-7 text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i class="fas fa-globe text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Global Coverage</h3>
+                <p class="text-gray-600">Accurate data for IP addresses in over 200 countries worldwide.</p>
+            </div>
+        </div>
+
+        <!-- Sample IPs Section -->
+        <div class="card p-7 mb-10">
+            <h2 class="text-xl font-semibold text-gray-800 mb-5 flex items-center">
+                <i class="fas fa-lightbulb mr-3 text-yellow-400"></i> Try these sample IP addresses:
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                <button class="ip-sample bg-blue-100 hover:bg-primary text-blue-800 hover:text-white py-3 px-5 rounded-lg transition-colors">8.8.8.8</button>
+                <button class="ip-sample bg-blue-100 hover:bg-primary text-blue-800 hover:text-white py-3 px-5 rounded-lg transition-colors">1.1.1.1</button>
+                <button class="ip-sample bg-blue-100 hover:bg-primary text-blue-800 hover:text-white py-3 px-5 rounded-lg transition-colors">208.67.222.222</button>
+                <button class="ip-sample bg-blue-100 hover:bg-primary text-blue-800 hover:text-white py-3 px-5 rounded-lg transition-colors">151.101.1.69</button>
+            </div>
+        </div>
+
+        <!-- Feedback Section -->
+        <div class="form-container mx-auto px-4 py-8 max-w-2xl w-full">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Share Your Feedback</h2>
+                <div class="w-20 h-1 bg-blue-500 mx-auto mb-6"></div>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                    We value your opinion. Help us improve CurrencyPro by sharing your experience.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
+                <div class="flex items-center mb-6">
+                    <div class="bg-blue-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-comment text-blue-500 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">Send us a Message</h3>
+                </div>
+                
+                <form id="my-form" action="https://formspree.io/f/xanbrazj" method="POST">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
+                            <i class="fas fa-envelope text-blue-500 mr-2"></i>Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="Enter your email" 
+                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2" for="message">
+                            <i class="fas fa-edit text-blue-500 mr-2"></i>Your Message
+                        </label>
+                        <textarea 
+                            id="message" 
+                            name="message" 
+                            rows="4" 
+                            placeholder="Tell us what you think..." 
+                            class="form-input w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div id="my-form-status" class="mb-4 text-center font-medium"></div>
+                    
+                    <button 
+                        type="submit" 
+                        id="my-form-button" 
+                        class="form-button w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center"
+                    >
+                        <i class="fas fa-paper-plane mr-2"></i> Submit Feedback
+                    </button>
+                </form>
+                
+                <div class="mt-8 pt-6 border-t border-gray-200 text-center text-gray-600">
+                    <p><i class="fas fa-shield-alt mr-2 text-blue-500"></i> Your feedback is secure and will be kept confidential</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white py-14">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+                <div>
+                    <h3 class="text-xl font-bold mb-5 flex items-center">
+                        <i class="fas fa-map-marker-alt mr-3 text-primary"></i> GeoLocate
+                    </h3>
+                    <p class="text-gray-400 max-w-md">
+                        Accurate IP geolocation service providing detailed location information for any IP address.
+                    </p>
+                </div>
+                
+                <div class="social-links">
+                    <h4 class="text-lg font-semibold mb-5">Connect</h4>
+                    <div class="flex space-x-5">
+                    <a href="https://github.com/Dipalikirdak" class="text-gray-400 hover:text-white transition text-xl"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/dipali-kirdak-4722b2303?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="text-gray-400 hover:text-white transition text-xl"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-10 border-t border-gray-800 text-center text-gray-500 text-sm">
+                <p>
+                    © 2023 GeoLocate. All rights reserved. Powered by 
+                    <a href="https://ipify.org" class="text-primary hover:underline">ipify</a> and 
+                    <a href="https://ipapi.co" class="text-primary hover:underline">ipapi.co</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="main.js" type="text/javascript" charset="utf-8"></script>
+    
+</body>
+</html>
+
